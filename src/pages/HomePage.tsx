@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   MapPin, 
   MessageSquare, 
@@ -8,47 +8,165 @@ import {
   Wind, 
   Tv, 
   ShieldCheck, 
-  UtensilsCrossed, 
   Building2, 
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Camera,
+  Calendar,
+  Users
 } from 'lucide-react';
 import { HOTEL_DETAILS, HOTEL_PHOTOS, type PhotoItem } from '../data/photos';
 import { BookingForm } from '../components/BookingForm';
 import { buildWhatsAppLink } from '../lib/whatsapp';
+import { useScrollReveal } from '../hooks/useScrollReveal';
+import type { RoomCategory } from '../lib/supabase';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
   onOpenLightbox: (photo: PhotoItem) => void;
-  onOpenBooking: (roomCategory?: 'deluxe' | 'super-deluxe' | 'any') => void;
+  onOpenBooking: (roomCategory?: RoomCategory) => void;
 }
+
+const HERO_SLIDES = [
+  {
+    id: 'lobby',
+    title: 'Grand Reception & Lounge',
+    badge: 'Lobby Lounge · Photo DSC00153',
+    src: '/assets/hotel-kings-crown/photos/DSC00153.jpg',
+    tagline: 'A Welcoming Sanctuary Behind WTP, Jaipur'
+  },
+  {
+    id: 'deluxe',
+    title: 'Deluxe King Bedroom',
+    badge: 'Deluxe Bedroom · Photo DSC00186',
+    src: '/assets/hotel-kings-crown/photos/DSC00186.jpg',
+    tagline: 'Individual Split AC, Crisp Linens & Calm Privacy'
+  },
+  {
+    id: 'super-deluxe',
+    title: 'Super Deluxe Balcony Suite',
+    badge: 'Balcony Suite · Photo DSC00212',
+    src: '/assets/hotel-kings-crown/photos/DSC00212.jpg',
+    tagline: 'Private Balcony, Velvet Sitting Lounge & Minibar'
+  },
+  {
+    id: 'dining',
+    title: 'On-Site Marble Dining Hall',
+    badge: 'Dining Hall · Photo DSC00171',
+    src: '/assets/hotel-kings-crown/photos/DSC00171.jpg',
+    tagline: 'Bright Climate-Controlled Dining Space'
+  }
+];
 
 export const HomePage: React.FC<HomePageProps> = ({
   onNavigate,
   onOpenLightbox,
   onOpenBooking
 }) => {
-  // Select curated preview photos
+  useScrollReveal();
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
+
+  // Quick search widget state
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const dayAfter = new Date();
+  dayAfter.setDate(dayAfter.getDate() + 3);
+
+  const [checkIn, setCheckIn] = useState(tomorrow.toISOString().split('T')[0]);
+  const [checkOut, setCheckOut] = useState(dayAfter.toISOString().split('T')[0]);
+  const [roomCategory, setRoomCategory] = useState<RoomCategory>('any');
+  const [guests, setGuests] = useState('2');
+
+  // Parallax scroll listener
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrollY(window.scrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Auto-advance hero slides every 7 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 7000);
+    return () => clearInterval(timer);
+  }, []);
+
   const galleryPreview = HOTEL_PHOTOS.filter((p) => p.featured).slice(0, 6);
+
+  const handleQuickSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const element = document.getElementById('enquire');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const currentHero = HERO_SLIDES[activeSlide];
+  const parallaxTransform = `translate3d(0, ${Math.min(scrollY * 0.28, 120)}px, 0) scale(${1 + Math.min(scrollY * 0.0003, 0.08)})`;
 
   return (
     <main id="main-content">
-      {/* 1. HERO SECTION */}
-      <section className="hero-section" aria-label="Welcome to Hotel Kings Crown">
-        <div className="container hero-grid">
-          <div className="hero-content">
-            <span className="eyebrow">A WELCOMING STAY IN JAIPUR</span>
-            <h1 className="hero-title">
-              A Comfortable Stay in the Heart of Jaipur
-            </h1>
-            <p className="hero-desc">
-              Discover a welcoming space to relax, unwind, and make the most of your time in Jaipur at Hotel Kings Crown. Located in Malviya Nagar, behind World Trade Park (WTP).
+      {/* 1. CINEMATIC HERO SECTION WITH REAL HOTEL PHOTOGRAPHY */}
+      <section className="cinematic-hero" aria-label="Welcome to Hotel Kings Crown">
+        {/* Background Slide Carousel with Parallax */}
+        <div className="hero-bg-carousel">
+          {HERO_SLIDES.map((slide, idx) => (
+            <div
+              key={slide.id}
+              className={`hero-bg-slide ${idx === activeSlide ? 'active' : ''}`}
+            >
+              <img
+                src={slide.src}
+                alt={slide.title}
+                className="hero-bg-image"
+                style={{ transform: parallaxTransform }}
+                loading={idx === 0 ? 'eager' : 'lazy'}
+              />
+            </div>
+          ))}
+          <div className="hero-cinematic-overlay" />
+        </div>
+
+        {/* Hero Content */}
+        <div className="container hero-container">
+          <div className="hero-main-column">
+            {/* Location & Heritage Badge */}
+            <div className="hero-badge-strip reveal-fade-up">
+              <span className="hero-eyebrow-pill">
+                <MapPin size={13} style={{ display: 'inline', marginRight: '6px' }} />
+                MALVIYA NAGAR · BEHIND WTP · JAIPUR
+              </span>
+            </div>
+
+            {/* Masked Editorial Heading */}
+            <div className="hero-title-mask reveal-fade-up delay-100">
+              <h1 className="hero-cinematic-title">
+                A Comfortable Stay in the Heart of Jaipur
+              </h1>
+            </div>
+
+            {/* Supporting Copy */}
+            <p className="hero-cinematic-desc reveal-fade-up delay-200">
+              Discover a welcoming sanctuary to relax, unwind, and make the most of your time in Rajasthan's Pink City. Thoughtfully appointed Deluxe & Super Deluxe rooms, 24/7 reception, on-site dining hall, and modern amenities situated right behind World Trade Park (WTP).
             </p>
 
-            <div className="hero-actions">
+            {/* Primary Action Buttons */}
+            <div className="hero-cinematic-actions reveal-fade-up delay-300">
               <button 
                 type="button" 
-                className="btn btn-primary btn-lg"
+                className="btn btn-gold btn-lg hero-action-btn"
                 onClick={() => onNavigate('rooms')}
               >
                 Explore Our Rooms
@@ -58,50 +176,133 @@ export const HomePage: React.FC<HomePageProps> = ({
                 href={HOTEL_DETAILS.whatsappUrl}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="btn btn-whatsapp btn-lg"
+                className="btn btn-whatsapp btn-lg hero-action-btn"
               >
                 <MessageSquare size={18} />
                 Enquire on WhatsApp
               </a>
-            </div>
-
-            <div className="hero-meta-strip">
-              <div className="hero-meta-item">
-                <MapPin size={18} />
-                <span>Behind WTP, Malviya Nagar</span>
-              </div>
-              <div className="hero-meta-item">
-                <UtensilsCrossed size={18} />
-                <span>On-Site Dining Hall</span>
-              </div>
-              <div className="hero-meta-item">
-                <Building2 size={18} />
-                <span>Elevator to All Floors</span>
-              </div>
+              <button
+                type="button"
+                className="btn btn-outline-light btn-lg hero-action-btn"
+                onClick={() => onNavigate('gallery')}
+              >
+                View 26 Real Photos
+              </button>
             </div>
           </div>
 
-          <div className="hero-image-wrapper">
-            <div className="hero-image-card">
-              <img 
-                src="/assets/hotel-kings-crown/photos/DSC00153.jpg" 
-                alt="Hotel Kings Crown reception lobby and guest relaxation lounge" 
-                className="hero-main-img"
-                loading="eager"
-              />
-              <div className="hero-image-badge">
-                Actual Hotel Lobby & Reception Lounge
-              </div>
+          {/* Bottom Controls: Slide Switcher Tabs & Attribution */}
+          <div className="hero-bottom-bar reveal-fade-in delay-300">
+            {/* Real Photo Attribution Tag */}
+            <div className="hero-photo-tag">
+              <Camera size={14} />
+              <span>{currentHero.badge}</span>
+            </div>
+
+            {/* Interactive Photo Scene Tabs */}
+            <div className="hero-scene-tabs" role="tablist" aria-label="Hotel Spaces">
+              {HERO_SLIDES.map((slide, idx) => (
+                <button
+                  key={slide.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={idx === activeSlide}
+                  className={`hero-scene-tab ${idx === activeSlide ? 'active' : ''}`}
+                  onClick={() => setActiveSlide(idx)}
+                >
+                  <span className="scene-num">0{idx + 1}</span>
+                  <span className="scene-name">{slide.title.split(' ')[0]}</span>
+                </button>
+              ))}
             </div>
           </div>
         </div>
+
+        {/* Scroll Indicator */}
+        <div className="hero-scroll-indicator">
+          <span>DISCOVER</span>
+          <div className="scroll-line" />
+        </div>
       </section>
 
-      {/* 2. SHORT EDITORIAL INTRODUCTION */}
+      {/* 2. FLOATING QUICK ENQUIRY STRIP (HERO SEARCH WIDGET) */}
+      <section className="hero-search-strip-wrapper">
+        <div className="container">
+          <form className="hero-search-bar" onSubmit={handleQuickSearchSubmit}>
+            <div className="search-field">
+              <label htmlFor="search-check-in">
+                <Calendar size={14} />
+                <span>CHECK-IN</span>
+              </label>
+              <input
+                id="search-check-in"
+                type="date"
+                value={checkIn}
+                onChange={(e) => setCheckIn(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="search-field">
+              <label htmlFor="search-check-out">
+                <Calendar size={14} />
+                <span>CHECK-OUT</span>
+              </label>
+              <input
+                id="search-check-out"
+                type="date"
+                value={checkOut}
+                min={checkIn}
+                onChange={(e) => setCheckOut(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="search-field">
+              <label htmlFor="search-category">
+                <Building2 size={14} />
+                <span>ROOM CATEGORY</span>
+              </label>
+              <select
+                id="search-category"
+                value={roomCategory}
+                onChange={(e) => setRoomCategory(e.target.value as RoomCategory)}
+              >
+                <option value="any">Any Room Category</option>
+                <option value="deluxe">Deluxe Room</option>
+                <option value="super-deluxe">Super Deluxe Room</option>
+              </select>
+            </div>
+
+            <div className="search-field">
+              <label htmlFor="search-guests">
+                <Users size={14} />
+                <span>GUESTS</span>
+              </label>
+              <select
+                id="search-guests"
+                value={guests}
+                onChange={(e) => setGuests(e.target.value)}
+              >
+                <option value="1">1 Adult</option>
+                <option value="2">2 Adults</option>
+                <option value="3">3 Adults</option>
+                <option value="4">4+ Adults / Family</option>
+              </select>
+            </div>
+
+            <button type="submit" className="btn btn-gold btn-search">
+              Check Availability
+            </button>
+          </form>
+        </div>
+      </section>
+
+      {/* 3. SHORT EDITORIAL INTRODUCTION */}
       <section className="section section-cream" aria-labelledby="intro-heading">
         <div className="container">
           <div className="intro-grid">
-            <div className="intro-image-frame">
+            <div className="intro-image-frame reveal-fade-up">
               <img 
                 src="/assets/hotel-kings-crown/photos/DSC00144.jpg" 
                 alt="Front desk reception counter with marble finish and Rajasthani palace wallpaper" 
@@ -112,7 +313,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </p>
             </div>
 
-            <div>
+            <div className="reveal-fade-up delay-100">
               <span className="eyebrow">OUR PROPERTY IN MALVIYA NAGAR</span>
               <h2 id="intro-heading" style={{ marginBottom: '1.4rem' }}>
                 Your Jaipur Stay, Thoughtfully Considered
@@ -155,10 +356,10 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* 3. ROOM CATEGORIES */}
+      {/* 4. ROOM CATEGORIES */}
       <section className="section" id="rooms" aria-labelledby="rooms-heading">
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 4rem auto' }}>
+          <div className="reveal-fade-up" style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 4rem auto' }}>
             <span className="eyebrow">ACCOMMODATIONS</span>
             <h2 id="rooms-heading" style={{ marginBottom: '0.8rem' }}>
               Distinctive Rooms for Your Jaipur Visit
@@ -169,7 +370,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Deluxe Room Spread */}
-          <div className="room-editorial-item">
+          <div className="room-editorial-item reveal-fade-up">
             <div className="room-media">
               <div className="room-main-frame">
                 <span className="room-badge-pill">DELUXE CATEGORY</span>
@@ -230,7 +431,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Super Deluxe Room Spread (Reversed Layout) */}
-          <div className="room-editorial-item reversed">
+          <div className="room-editorial-item reversed reveal-fade-up delay-100">
             <div className="room-media">
               <div className="room-main-frame">
                 <span className="room-badge-pill">SUPER DELUXE CATEGORY</span>
@@ -290,7 +491,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+          <div className="reveal-fade-up" style={{ textAlign: 'center', marginTop: '2rem' }}>
             <button 
               type="button"
               className="btn btn-outline"
@@ -303,10 +504,10 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* 4. PROPERTY HIGHLIGHTS */}
+      {/* 5. PROPERTY HIGHLIGHTS */}
       <section className="section section-cream" aria-labelledby="highlights-heading">
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3rem auto' }}>
+          <div className="reveal-fade-up" style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3rem auto' }}>
             <span className="eyebrow">PROPERTY CHARACTER</span>
             <h2 id="highlights-heading" style={{ marginBottom: '0.8rem' }}>
               Actual Facilities & Hotel Spaces
@@ -318,7 +519,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
           <div className="highlights-grid">
             {/* Highlight 1: Dining Hall */}
-            <div className="highlight-card">
+            <div className="highlight-card reveal-fade-up delay-100">
               <div className="highlight-image-box">
                 <img 
                   src="/assets/hotel-kings-crown/photos/DSC00171.jpg" 
@@ -335,7 +536,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
 
             {/* Highlight 2: Golden Elevator */}
-            <div className="highlight-card">
+            <div className="highlight-card reveal-fade-up delay-200">
               <div className="highlight-image-box">
                 <img 
                   src="/assets/hotel-kings-crown/photos/DSC00162.jpg" 
@@ -352,7 +553,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
 
             {/* Highlight 3: Modern Bathrooms */}
-            <div className="highlight-card">
+            <div className="highlight-card reveal-fade-up delay-300">
               <div className="highlight-image-box">
                 <img 
                   src="/assets/hotel-kings-crown/photos/DSC00204.jpg" 
@@ -371,10 +572,10 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* 5. CURATED GALLERY PREVIEW */}
+      {/* 6. CURATED GALLERY PREVIEW */}
       <section className="section" id="gallery" aria-labelledby="gallery-preview-heading">
         <div className="container">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2.5rem' }}>
+          <div className="reveal-fade-up" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2.5rem' }}>
             <div>
               <span className="eyebrow">PHOTOGRAPHY SPREAD</span>
               <h2 id="gallery-preview-heading">Explore Hotel Kings Crown</h2>
@@ -390,10 +591,10 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           <div className="gallery-grid">
-            {galleryPreview.map((photo) => (
+            {galleryPreview.map((photo, idx) => (
               <div 
                 key={photo.id} 
-                className="gallery-item"
+                className={`gallery-item reveal-fade-up delay-${(idx % 3 + 1) * 100}`}
                 onClick={() => onOpenLightbox(photo)}
                 role="button"
                 tabIndex={0}
@@ -410,11 +611,11 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* 6. LOCATION & DIRECTIONS */}
+      {/* 7. LOCATION & DIRECTIONS */}
       <section className="section section-cream" id="location" aria-labelledby="location-heading">
         <div className="container">
           <div className="location-grid">
-            <div className="location-details">
+            <div className="location-details reveal-fade-up">
               <span className="eyebrow">MALVIYA NAGAR, JAIPUR</span>
               <h2 id="location-heading" style={{ marginBottom: '1.2rem' }}>
                 Conveniently Located Behind WTP
@@ -468,7 +669,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
             </div>
 
-            <div className="map-container">
+            <div className="map-container reveal-fade-in delay-200">
               <iframe
                 title="Hotel Kings Crown Location Map"
                 src="https://maps.google.com/maps?q=Hotel+Kings+Crown+Malviya+Nagar+Jaipur&t=&z=15&ie=UTF8&iwloc=&output=embed"
@@ -482,9 +683,9 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* 7. DIRECT BOOKING ENQUIRY SECTION */}
+      {/* 8. DIRECT BOOKING ENQUIRY SECTION */}
       <section className="section section-white" id="enquire" aria-labelledby="enquire-heading">
-        <div className="container-narrow">
+        <div className="container-narrow reveal-fade-up">
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <span className="eyebrow">PLAN YOUR VISIT</span>
             <h2 id="enquire-heading" style={{ marginBottom: '0.8rem' }}>
@@ -495,7 +696,12 @@ export const HomePage: React.FC<HomePageProps> = ({
             </p>
           </div>
 
-          <BookingForm />
+          <BookingForm 
+            initialRoomCategory={roomCategory}
+            initialCheckIn={checkIn}
+            initialCheckOut={checkOut}
+            initialAdults={parseInt(guests, 10) || 1}
+          />
         </div>
       </section>
     </main>

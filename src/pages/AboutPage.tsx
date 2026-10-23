@@ -1,5 +1,8 @@
+import React from 'react';
 import { MessageSquare, Check, ShieldCheck } from 'lucide-react';
 import { HOTEL_DETAILS } from '../data/photos';
+import { PageHero } from '../components/PageHero';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 interface AboutPageProps {
   onNavigate?: (page: string) => void;
@@ -7,25 +10,44 @@ interface AboutPageProps {
 }
 
 export const AboutPage: React.FC<AboutPageProps> = ({ onOpenBooking }) => {
+  useScrollReveal();
+
   return (
     <main>
-      {/* Page Header */}
-      <section className="section section-cream" style={{ paddingBottom: '3.5rem' }}>
-        <div className="container" style={{ textAlign: 'center', maxWidth: '820px' }}>
-          <span className="eyebrow">ABOUT THE PROPERTY</span>
-          <h1 style={{ marginBottom: '1.2rem' }}>
-            Hospitality Grounded in Comfort & Care
-          </h1>
-          <p style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
-            Hotel Kings Crown is a welcoming, independently operated hotel in Malviya Nagar, Jaipur, offering comfortable accommodations and practical conveniences for travelers.
-          </p>
-        </div>
-      </section>
+      {/* Front Hero with Authentic Property Photograph Background */}
+      <PageHero
+        photoSrc="/assets/hotel-kings-crown/photos/DSC00134.jpg"
+        photoAlt="Hotel Kings Crown reception lounge seating with curved sofas"
+        eyebrow="OUR IDENTITY & LOCATION · MALVIYA NAGAR"
+        title="Hospitality Grounded in Comfort & Care"
+        subtitle="An independently operated boutique hotel in Malviya Nagar, Jaipur, offering comfortable accommodations and practical conveniences for travelers."
+        badgeText="Actual Guest Lounge · Photo DSC00134"
+        actions={
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="btn btn-gold"
+              onClick={onOpenBooking}
+            >
+              Enquire About Room Availability
+            </button>
+            <a
+              href={HOTEL_DETAILS.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-whatsapp"
+            >
+              <MessageSquare size={16} />
+              WhatsApp Direct
+            </a>
+          </div>
+        }
+      />
 
       {/* Main Story & Values */}
       <section className="section">
         <div className="container">
-          <div className="intro-grid" style={{ marginBottom: '5rem' }}>
+          <div className="intro-grid reveal-fade-up" style={{ marginBottom: '5rem' }}>
             <div>
               <span className="eyebrow">OUR LOCATION & COMMITMENT</span>
               <h2 style={{ marginBottom: '1.4rem' }}>
@@ -61,7 +83,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenBooking }) => {
               </div>
             </div>
 
-            <div className="intro-image-frame">
+            <div className="intro-image-frame reveal-fade-in delay-200">
               <img
                 src="/assets/hotel-kings-crown/photos/DSC00134.jpg"
                 alt="Hotel Kings Crown reception lounge seating with curved sofas"
@@ -74,7 +96,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenBooking }) => {
           </div>
 
           {/* Genuine Facilities Section */}
-          <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3rem auto' }}>
+          <div className="reveal-fade-up" style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3rem auto' }}>
             <span className="eyebrow">VERIFIED FACILITIES</span>
             <h2 style={{ marginBottom: '0.8rem' }}>What You Will Find at Hotel Kings Crown</h2>
             <p>
@@ -82,8 +104,8 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenBooking }) => {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', marginBottom: '4rem' }}>
-            <div style={{ padding: '2rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px', border: '1px solid var(--border-soft)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
+            <div className="reveal-fade-up delay-100" style={{ padding: '2rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px', border: '1px solid var(--border-soft)' }}>
               <div style={{ color: 'var(--accent-gold)', marginBottom: '1rem' }}>
                 <Check size={28} />
               </div>
@@ -93,7 +115,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenBooking }) => {
               </p>
             </div>
 
-            <div style={{ padding: '2rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px', border: '1px solid var(--border-soft)' }}>
+            <div className="reveal-fade-up delay-200" style={{ padding: '2rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px', border: '1px solid var(--border-soft)' }}>
               <div style={{ color: 'var(--accent-gold)', marginBottom: '1rem' }}>
                 <Check size={28} />
               </div>
@@ -103,7 +125,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenBooking }) => {
               </p>
             </div>
 
-            <div style={{ padding: '2rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px', border: '1px solid var(--border-soft)' }}>
+            <div className="reveal-fade-up delay-300" style={{ padding: '2rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px', border: '1px solid var(--border-soft)' }}>
               <div style={{ color: 'var(--accent-gold)', marginBottom: '1rem' }}>
                 <Check size={28} />
               </div>
@@ -113,7 +135,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenBooking }) => {
               </p>
             </div>
 
-            <div style={{ padding: '2rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px', border: '1px solid var(--border-soft)' }}>
+            <div className="reveal-fade-up delay-100" style={{ padding: '2rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px', border: '1px solid var(--border-soft)' }}>
               <div style={{ color: 'var(--accent-gold)', marginBottom: '1rem' }}>
                 <Check size={28} />
               </div>
@@ -123,7 +145,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenBooking }) => {
               </p>
             </div>
 
-            <div style={{ padding: '2rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px', border: '1px solid var(--border-soft)' }}>
+            <div className="reveal-fade-up delay-200" style={{ padding: '2rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px', border: '1px solid var(--border-soft)' }}>
               <div style={{ color: 'var(--accent-gold)', marginBottom: '1rem' }}>
                 <Check size={28} />
               </div>
@@ -133,7 +155,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenBooking }) => {
               </p>
             </div>
 
-            <div style={{ padding: '2rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px', border: '1px solid var(--border-soft)' }}>
+            <div className="reveal-fade-up delay-300" style={{ padding: '2rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px', border: '1px solid var(--border-soft)' }}>
               <div style={{ color: 'var(--accent-gold)', marginBottom: '1rem' }}>
                 <ShieldCheck size={28} />
               </div>
@@ -144,8 +166,8 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenBooking }) => {
             </div>
           </div>
 
-          {/* Photo Pair */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+          {/* Photo Pair with subtle zoom and border */}
+          <div className="reveal-fade-up" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
             <div style={{ borderRadius: '3px', overflow: 'hidden', border: '1px solid var(--border-soft)' }}>
               <img
                 src="/assets/hotel-kings-crown/photos/DSC00177.jpg"

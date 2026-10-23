@@ -5,6 +5,9 @@ import { buildWhatsAppLink } from '../lib/whatsapp';
 
 interface BookingFormProps {
   initialRoomCategory?: RoomCategory;
+  initialCheckIn?: string;
+  initialCheckOut?: string;
+  initialAdults?: number;
   onSuccess?: () => void;
   title?: string;
   subtitle?: string;
@@ -12,6 +15,9 @@ interface BookingFormProps {
 
 export const BookingForm: React.FC<BookingFormProps> = ({
   initialRoomCategory = 'any',
+  initialCheckIn = '',
+  initialCheckOut = '',
+  initialAdults = 2,
   title = 'Enquire About Room Availability',
   subtitle = 'Share your preferred dates and room preference. The hotel team will confirm availability and current rates directly.'
 }) => {
@@ -20,13 +26,24 @@ export const BookingForm: React.FC<BookingFormProps> = ({
   const [formData, setFormData] = useState({
     guest_name: '',
     contact_number: '',
-    check_in: '',
-    check_out: '',
-    adults: 2,
+    check_in: initialCheckIn,
+    check_out: initialCheckOut,
+    adults: initialAdults,
     children: 0,
     room_category: initialRoomCategory,
     message: ''
   });
+
+  // Sync props if parent quick search updates
+  React.useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      room_category: initialRoomCategory,
+      check_in: initialCheckIn || prev.check_in,
+      check_out: initialCheckOut || prev.check_out,
+      adults: initialAdults || prev.adults
+    }));
+  }, [initialRoomCategory, initialCheckIn, initialCheckOut, initialAdults]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);

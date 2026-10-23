@@ -2,29 +2,50 @@ import React from 'react';
 import { MapPin, Phone, MessageSquare, Clock, ExternalLink } from 'lucide-react';
 import { HOTEL_DETAILS } from '../data/photos';
 import { BookingForm } from '../components/BookingForm';
+import { PageHero } from '../components/PageHero';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 export const ContactPage: React.FC = () => {
+  useScrollReveal();
+
   return (
     <main>
-      {/* Page Header */}
-      <section className="section section-cream" style={{ paddingBottom: '3.5rem' }}>
-        <div className="container" style={{ textAlign: 'center', maxWidth: '820px' }}>
-          <span className="eyebrow">GET IN TOUCH</span>
-          <h1 style={{ marginBottom: '1.2rem' }}>
-            Contact Hotel Kings Crown
-          </h1>
-          <p style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
-            Reach out directly for room availability, rates, group stay requests, or directions to our property in Malviya Nagar, Jaipur.
-          </p>
-        </div>
-      </section>
+      {/* Front Hero with Authentic Property Photograph Background */}
+      <PageHero
+        photoSrc="/assets/hotel-kings-crown/photos/DSC00144.jpg"
+        photoAlt="Hotel Kings Crown front desk reception counter with marble finish and Rajasthani wallpaper"
+        eyebrow="DIRECT HOTEL CONCIERGE · 24/7 SUPPORT"
+        title="Contact Hotel Kings Crown"
+        subtitle="Reach out directly for room availability, rates, group stay requests, or directions to our property in Malviya Nagar, Jaipur behind WTP."
+        badgeText="Actual Front Desk · Photo DSC00144"
+        actions={
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <a 
+              href={HOTEL_DETAILS.whatsappUrl}
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="btn btn-whatsapp"
+            >
+              <MessageSquare size={16} />
+              WhatsApp Us (+91 9399112249)
+            </a>
+            <a 
+              href={`tel:${HOTEL_DETAILS.phone}`}
+              className="btn btn-gold"
+            >
+              <Phone size={16} />
+              Call Reception
+            </a>
+          </div>
+        }
+      />
 
       {/* Main Content: Info & Form */}
       <section className="section">
         <div className="container">
           <div className="location-grid" style={{ alignItems: 'flex-start', marginBottom: '4rem' }}>
             {/* Contact Details */}
-            <div>
+            <div className="reveal-fade-up">
               <span className="eyebrow">HOTEL FRONT DESK</span>
               <h2 style={{ marginBottom: '1.2rem' }}>Reach Us Directly</h2>
               <p style={{ marginBottom: '2rem' }}>
@@ -99,7 +120,7 @@ export const ContactPage: React.FC = () => {
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <a 
                   href={HOTEL_DETAILS.whatsappUrl}
-                  target="_blank"
+                  target="_blank" 
                   rel="noopener noreferrer"
                   className="btn btn-whatsapp"
                 >
@@ -108,7 +129,7 @@ export const ContactPage: React.FC = () => {
                 </a>
                 <a 
                   href={HOTEL_DETAILS.googleMapsUrl}
-                  target="_blank"
+                  target="_blank" 
                   rel="noopener noreferrer"
                   className="btn btn-primary"
                 >
@@ -119,7 +140,7 @@ export const ContactPage: React.FC = () => {
             </div>
 
             {/* Direct Booking Enquiry Form */}
-            <div>
+            <div className="reveal-fade-up delay-200">
               <BookingForm 
                 title="Send a Booking Enquiry"
                 subtitle="Fill in your details below. The hotel team will verify availability and respond with direct rates."
@@ -128,7 +149,7 @@ export const ContactPage: React.FC = () => {
           </div>
 
           {/* Interactive Google Map */}
-          <div>
+          <div className="reveal-fade-up">
             <div style={{ marginBottom: '1.2rem' }}>
               <span className="eyebrow">LOCATION MAP</span>
               <h3>Find Us Behind World Trade Park (WTP)</h3>

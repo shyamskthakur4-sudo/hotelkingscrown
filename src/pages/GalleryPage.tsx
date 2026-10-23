@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { HOTEL_PHOTOS, type PhotoItem } from '../data/photos';
+import { PageHero } from '../components/PageHero';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 interface GalleryPageProps {
   onOpenLightbox: (photo: PhotoItem) => void;
@@ -10,6 +12,7 @@ type CategoryFilter = 'all' | 'rooms' | 'interiors' | 'dining' | 'bathrooms';
 
 export const GalleryPage: React.FC<GalleryPageProps> = ({ onOpenLightbox, onOpenBooking }) => {
   const [filter, setFilter] = useState<CategoryFilter>('all');
+  useScrollReveal(filter);
 
   const filteredPhotos = filter === 'all' 
     ? HOTEL_PHOTOS 
@@ -17,24 +20,21 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onOpenLightbox, onOpen
 
   return (
     <main>
-      {/* Page Header */}
-      <section className="section section-cream" style={{ paddingBottom: '3.5rem' }}>
-        <div className="container" style={{ textAlign: 'center', maxWidth: '800px' }}>
-          <span className="eyebrow">PROPERTY PHOTOGRAPHY</span>
-          <h1 style={{ marginBottom: '1.2rem' }}>
-            Hotel Kings Crown Photo Gallery
-          </h1>
-          <p style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
-            Explore authentic photographs of our guest rooms, lobby lounge, reception, dining hall, modern elevator, and en-suite bathrooms.
-          </p>
-        </div>
-      </section>
+      {/* Front Hero with Authentic Property Photograph Background */}
+      <PageHero
+        photoSrc="/assets/hotel-kings-crown/photos/DSC00171.jpg"
+        photoAlt="Hotel Kings Crown dining hall with marble tables and gold accents"
+        eyebrow="VISUAL ARCHIVE · 26 REAL PHOTOGRAPHS"
+        title="Hotel Kings Crown Photo Gallery"
+        subtitle="Explore authentic, unedited photographs of our guest rooms, lobby lounge, reception, dining hall, modern elevator, and en-suite bathrooms in Malviya Nagar, Jaipur."
+        badgeText="Actual Dining Hall · Photo DSC00171"
+      />
 
       {/* Filter and Grid */}
       <section className="section">
         <div className="container">
           {/* Category Filter Buttons */}
-          <div className="gallery-filter-bar">
+          <div className="gallery-filter-bar reveal-fade-up">
             <button
               type="button"
               className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
@@ -74,10 +74,10 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onOpenLightbox, onOpen
 
           {/* Photo Grid */}
           <div className="gallery-grid">
-            {filteredPhotos.map((photo) => (
+            {filteredPhotos.map((photo, idx) => (
               <div
                 key={photo.id}
-                className="gallery-item"
+                className={`gallery-item reveal-fade-up delay-${(idx % 4 + 1) * 100}`}
                 onClick={() => onOpenLightbox(photo)}
                 role="button"
                 tabIndex={0}
@@ -98,6 +98,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onOpenLightbox, onOpen
 
           {/* Bottom Enquiry Banner */}
           <div 
+            className="reveal-fade-up"
             style={{ 
               marginTop: '4rem', 
               padding: '3rem 2rem', 

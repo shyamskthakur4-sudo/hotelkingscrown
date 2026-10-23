@@ -13,7 +13,9 @@ import {
 } from 'lucide-react';
 import { HOTEL_PHOTOS, type PhotoItem } from '../data/photos';
 import { BookingForm } from '../components/BookingForm';
+import { PageHero } from '../components/PageHero';
 import { buildWhatsAppLink } from '../lib/whatsapp';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 import type { RoomCategory } from '../lib/supabase';
 
 interface RoomsPageProps {
@@ -23,6 +25,7 @@ interface RoomsPageProps {
 
 export const RoomsPage: React.FC<RoomsPageProps> = ({ onOpenLightbox }) => {
   const [selectedFormCategory, setSelectedFormCategory] = useState<RoomCategory>('any');
+  useScrollReveal();
 
   const deluxePhotos = HOTEL_PHOTOS.filter((p) => p.roomCategory === 'deluxe');
   const superDeluxePhotos = HOTEL_PHOTOS.filter((p) => p.roomCategory === 'super-deluxe');
@@ -38,23 +41,37 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onOpenLightbox }) => {
 
   return (
     <main>
-      {/* Page Header */}
-      <section className="section section-cream" style={{ paddingBottom: '3.5rem' }}>
-        <div className="container" style={{ textAlign: 'center', maxWidth: '820px' }}>
-          <span className="eyebrow">ACCOMMODATIONS AT HOTEL KINGS CROWN</span>
-          <h1 style={{ marginBottom: '1.2rem' }}>
-            Guest Rooms & Suites in Jaipur
-          </h1>
-          <p style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
-            Every room at Hotel Kings Crown is designed for genuine comfort, featuring fresh linens, individual climate control, private en-suite bathrooms, and authentic interior finishes.
-          </p>
-        </div>
-      </section>
+      {/* Front Hero with Authentic Property Photograph Background */}
+      <PageHero
+        photoSrc="/assets/hotel-kings-crown/photos/DSC00186.jpg"
+        photoAlt="Deluxe Room with king bed, individual split air conditioning, and fresh white linens"
+        eyebrow="ACCOMMODATIONS · MALVIYA NAGAR"
+        title="Guest Rooms & Suites in Jaipur"
+        subtitle="Designed for genuine comfort and peaceful relaxation, featuring individual climate control, clean white linens, modern en-suite bathrooms, and private balconies."
+        badgeText="Actual Deluxe Room · Photo DSC00186"
+        actions={
+          <div className="hero-quick-chips">
+            <a href="#deluxe-room" className="hero-chip-link">
+              ↓ Deluxe Room
+            </a>
+            <a href="#super-deluxe-room" className="hero-chip-link">
+              ↓ Super Deluxe Suite
+            </a>
+            <button 
+              type="button" 
+              className="btn btn-gold btn-sm"
+              onClick={() => scrollToEnquiry('any')}
+            >
+              Enquire Availability
+            </button>
+          </div>
+        }
+      />
 
       {/* DELUXE ROOM SECTION */}
       <section className="section" id="deluxe-room">
         <div className="container">
-          <div className="room-editorial-item" style={{ marginBottom: '3rem' }}>
+          <div className="room-editorial-item reveal-fade-up" style={{ marginBottom: '3rem' }}>
             <div className="room-media">
               <div className="room-main-frame">
                 <span className="room-badge-pill">DELUXE ROOM</span>
@@ -72,6 +89,7 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onOpenLightbox }) => {
                   <div 
                     key={p.id}
                     onClick={() => onOpenLightbox(p)}
+                    className="gallery-thumb-item"
                     style={{ 
                       borderRadius: '3px', 
                       overflow: 'hidden', 
@@ -156,7 +174,7 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onOpenLightbox }) => {
       {/* SUPER DELUXE ROOM SECTION */}
       <section className="section" id="super-deluxe-room">
         <div className="container">
-          <div className="room-editorial-item reversed" style={{ marginBottom: '3rem' }}>
+          <div className="room-editorial-item reversed reveal-fade-up" style={{ marginBottom: '3rem' }}>
             <div className="room-media">
               <div className="room-main-frame">
                 <span className="room-badge-pill">SUPER DELUXE SUITE</span>
@@ -174,6 +192,7 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onOpenLightbox }) => {
                   <div 
                     key={p.id}
                     onClick={() => onOpenLightbox(p)}
+                    className="gallery-thumb-item"
                     style={{ 
                       borderRadius: '3px', 
                       overflow: 'hidden', 
@@ -258,7 +277,7 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onOpenLightbox }) => {
       {/* BATHROOM SPECIFICATIONS */}
       <section className="section section-cream" aria-labelledby="bathroom-heading">
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 3rem auto' }}>
+          <div className="reveal-fade-up" style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 3rem auto' }}>
             <span className="eyebrow">HYGIENE & COMFORT</span>
             <h2 id="bathroom-heading" style={{ marginBottom: '0.8rem' }}>
               Modern En-Suite Bathrooms
@@ -268,11 +287,11 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onOpenLightbox }) => {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.8rem' }}>
-            {bathroomPhotos.map((photo) => (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.8rem' }}>
+            {bathroomPhotos.map((photo, idx) => (
               <div 
                 key={photo.id}
-                className="highlight-card"
+                className={`highlight-card reveal-fade-up delay-${(idx + 1) * 100}`}
                 onClick={() => onOpenLightbox(photo)}
                 style={{ cursor: 'pointer' }}
               >
@@ -291,7 +310,7 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onOpenLightbox }) => {
 
       {/* DIRECT BOOKING ENQUIRY SECTION */}
       <section className="section section-white" id="room-booking-form-section">
-        <div className="container-narrow">
+        <div className="container-narrow reveal-fade-up">
           <BookingForm 
             initialRoomCategory={selectedFormCategory}
             title="Book Your Stay at Hotel Kings Crown"

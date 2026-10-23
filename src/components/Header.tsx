@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X, MessageSquare, Phone } from 'lucide-react';
 import { HOTEL_DETAILS } from '../data/photos';
 
@@ -10,6 +10,17 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate, onOpenBooking }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 35);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleNavClick = (page: string) => {
     onNavigate(page);
@@ -18,21 +29,23 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate, onOpenB
   };
 
   return (
-    <header className="site-header" role="banner">
+    <header className={`site-header ${isScrolled ? 'is-scrolled' : 'is-transparent'}`} role="banner">
       <div className="container header-inner">
         <a 
           href="#home" 
           className="header-brand"
           onClick={(e) => { e.preventDefault(); handleNavClick('home'); }}
         >
-          <img 
-            src="/assets/hotel-kings-crown/logo-transparent.png" 
-            alt="Hotel Kings Crown Logo" 
-            className="header-logo-img"
-          />
+          <div className="header-logo-badge">
+            <img 
+              src="/assets/hotel-kings-crown/logo-transparent.png" 
+              alt="Hotel Kings Crown Logo" 
+              className="header-logo-img"
+            />
+          </div>
           <div className="header-brand-text">
             <span className="header-brand-name">Hotel Kings Crown</span>
-            <span className="header-brand-sub">Malviya Nagar, Jaipur</span>
+            <span className="header-brand-sub">Malviya Nagar · Jaipur</span>
           </div>
         </a>
 
@@ -81,7 +94,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate, onOpenB
             href={HOTEL_DETAILS.whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-whatsapp btn-sm"
+            className="btn btn-whatsapp btn-sm header-action-btn"
             title="Chat directly with Hotel Kings Crown on WhatsApp"
           >
             <MessageSquare size={16} />
@@ -89,7 +102,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate, onOpenB
           </a>
           <button 
             type="button"
-            className="btn btn-gold btn-sm"
+            className="btn btn-gold btn-sm header-action-btn"
             onClick={onOpenBooking}
           >
             Enquire Stay
@@ -107,62 +120,44 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate, onOpenB
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="mobile-drawer" style={{
-          position: 'fixed',
-          top: 'var(--header-height)',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: '#F8F6F1',
-          zIndex: 899,
-          padding: '2rem 1.5rem',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '1.2rem',
-          borderTop: '1px solid var(--border-soft)'
-        }}>
+        <div className="mobile-drawer">
           <button 
             type="button"
-            className="nav-link"
-            style={{ textAlign: 'left', fontSize: '1.25rem', padding: '0.6rem 0' }}
+            className="mobile-nav-link"
             onClick={() => handleNavClick('home')}
           >
             Home
           </button>
           <button 
             type="button"
-            className="nav-link"
-            style={{ textAlign: 'left', fontSize: '1.25rem', padding: '0.6rem 0' }}
+            className="mobile-nav-link"
             onClick={() => handleNavClick('rooms')}
           >
             Rooms & Suites
           </button>
           <button 
             type="button"
-            className="nav-link"
-            style={{ textAlign: 'left', fontSize: '1.25rem', padding: '0.6rem 0' }}
+            className="mobile-nav-link"
             onClick={() => handleNavClick('gallery')}
           >
             Property Gallery
           </button>
           <button 
             type="button"
-            className="nav-link"
-            style={{ textAlign: 'left', fontSize: '1.25rem', padding: '0.6rem 0' }}
+            className="mobile-nav-link"
             onClick={() => handleNavClick('about')}
           >
             About Us
           </button>
           <button 
             type="button"
-            className="nav-link"
-            style={{ textAlign: 'left', fontSize: '1.25rem', padding: '0.6rem 0' }}
+            className="mobile-nav-link"
             onClick={() => handleNavClick('contact')}
           >
             Contact & Directions
           </button>
 
-          <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+          <div className="mobile-drawer-footer">
             <button 
               type="button"
               className="btn btn-gold btn-lg"
@@ -187,7 +182,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate, onOpenB
               style={{ width: '100%' }}
             >
               <Phone size={18} />
-              Call Hotel Front Desk
+              Call Front Desk
             </a>
           </div>
         </div>
