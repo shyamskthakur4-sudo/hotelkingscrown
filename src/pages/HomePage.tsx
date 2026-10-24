@@ -30,24 +30,28 @@ const HERO_SLIDES = [
   {
     id: 'lobby',
     title: 'Grand Reception & Lounge',
+    shortTitle: 'Lobby Lounge',
     src: '/assets/hotel-kings-crown/photos/DSC00153.jpg',
     tagline: 'A Welcoming Sanctuary Behind WTP, Jaipur'
   },
   {
     id: 'deluxe',
     title: 'Deluxe King Bedroom',
+    shortTitle: 'Deluxe Room',
     src: '/assets/hotel-kings-crown/photos/DSC00186.jpg',
     tagline: 'Individual Split AC, Crisp Linens & Calm Privacy'
   },
   {
     id: 'super-deluxe',
     title: 'Super Deluxe Balcony Suite',
+    shortTitle: 'Balcony Suite',
     src: '/assets/hotel-kings-crown/photos/DSC00212.jpg',
     tagline: 'Private Balcony, Velvet Sitting Lounge & Minibar'
   },
   {
     id: 'dining',
     title: 'On-Site Marble Dining Hall',
+    shortTitle: 'Dining Hall',
     src: '/assets/hotel-kings-crown/photos/DSC00171.jpg',
     tagline: 'Bright Climate-Controlled Dining Space'
   }
@@ -218,7 +222,8 @@ export const HomePage: React.FC<HomePageProps> = ({
                   onClick={() => handleSelectSlide(idx)}
                 >
                   <span className="scene-num">0{idx + 1}</span>
-                  <span className="scene-name">{slide.title}</span>
+                  <span className="scene-name desktop-scene-name">{slide.title}</span>
+                  <span className="scene-name mobile-scene-name">{slide.shortTitle}</span>
                   {idx === activeSlide && (
                     <span className="scene-active-bar" aria-hidden="true" />
                   )}

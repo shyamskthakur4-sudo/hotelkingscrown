@@ -170,35 +170,18 @@ export const App: React.FC = () => {
           onClick={() => setBookingModalOpen(false)}
         >
           <div 
-            style={{ 
-              maxWidth: '680px', 
-              width: '100%', 
-              backgroundColor: '#FFFFFF', 
-              borderRadius: '6px', 
-              position: 'relative',
-              maxHeight: '90vh',
-              overflowY: 'auto'
-            }}
+            className="booking-modal-card"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
+              className="booking-modal-close"
               onClick={() => setBookingModalOpen(false)}
-              style={{
-                position: 'absolute',
-                top: '1.2rem',
-                right: '1.2rem',
-                zIndex: 10,
-                color: 'var(--text-secondary)',
-                padding: '0.4rem',
-                borderRadius: '50%',
-                backgroundColor: 'var(--bg-primary)'
-              }}
-              aria-label="Close form"
+              aria-label="Close booking enquiry form"
             >
               <X size={20} />
             </button>
-            <div style={{ padding: '2rem 1.8rem' }}>
+            <div className="booking-modal-body">
               <BookingForm 
                 initialRoomCategory={bookingCategory}
                 onSuccess={() => {
@@ -223,47 +206,19 @@ export const App: React.FC = () => {
         </button>
       )}
 
-      {/* Floating WhatsApp Action Pill with Online Dot */}
+      {/* Floating WhatsApp Action FAB / Pill with Online Indicator */}
       {currentPage !== 'admin' && (
         <a
           href={HOTEL_DETAILS.whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          style={{
-            position: 'fixed',
-            bottom: '1.8rem',
-            right: '1.8rem',
-            zIndex: 850,
-            backgroundColor: 'var(--whatsapp-green)',
-            color: '#FFFFFF',
-            borderRadius: '100px',
-            padding: '0.75rem 1.25rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.6rem',
-            boxShadow: '0 4px 20px rgba(31, 157, 85, 0.4)',
-            fontSize: '0.86rem',
-            fontWeight: 600,
-            letterSpacing: '0.02em',
-            transition: 'transform var(--transition-fast), background-color var(--transition-fast)'
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-2px)')}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
-          aria-label="Chat directly on WhatsApp with Hotel Kings Crown"
+          className="floating-whatsapp-btn"
+          aria-label="Chat directly on WhatsApp with Hotel Kings Crown (+91 9399112249)"
+          title="Chat directly on WhatsApp"
         >
-          <span 
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: '#55EB93',
-              boxShadow: '0 0 8px #55EB93',
-              display: 'inline-block'
-            }} 
-            aria-hidden="true"
-          />
-          <MessageSquare size={18} />
-          <span>WhatsApp Enquiries</span>
+          <span className="whatsapp-pulse-dot" aria-hidden="true" />
+          <MessageSquare size={19} className="whatsapp-icon" />
+          <span className="whatsapp-pill-text">WhatsApp Enquiries</span>
         </a>
       )}
     </div>

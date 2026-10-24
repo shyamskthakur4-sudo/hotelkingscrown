@@ -83,7 +83,7 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onOpenLightbox }) => {
               </div>
 
               {/* Thumbnails */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.8rem', marginTop: '1rem' }}>
+              <div className="room-thumbnails-grid">
                 {deluxePhotos.slice(0, 4).map((p) => (
                   <div 
                     key={p.id}
@@ -186,7 +186,7 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onOpenLightbox }) => {
               </div>
 
               {/* Thumbnails */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.8rem', marginTop: '1rem' }}>
+              <div className="room-thumbnails-grid">
                 {superDeluxePhotos.slice(0, 4).map((p) => (
                   <div 
                     key={p.id}
