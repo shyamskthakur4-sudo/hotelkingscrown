@@ -26,7 +26,7 @@ export const ContactPage: React.FC = () => {
               className="btn btn-whatsapp"
             >
               <MessageSquare size={16} />
-              WhatsApp Us (+91 9399112249)
+              WhatsApp Us (+91 7425023130)
             </a>
             <a 
               href={`tel:${HOTEL_DETAILS.phone}`}

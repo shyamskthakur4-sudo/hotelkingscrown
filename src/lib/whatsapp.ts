@@ -8,7 +8,7 @@ export interface WhatsAppEnquiryDetails {
   message?: string;
 }
 
-const WHATSAPP_PHONE = '919399112249';
+const WHATSAPP_PHONE = '917425023130';
 
 export function getRoomCategoryLabel(category?: string): string {
   if (category === 'deluxe') return 'Deluxe Room';

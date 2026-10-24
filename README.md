@@ -8,8 +8,8 @@ A bespoke, production-ready luxury hospitality website for **Hotel Kings Crown**
 
 * **Hotel Name:** Hotel Kings Crown
 * **Address:** B-21, Mahalaxmi Road, Behind WTP, Malviya Nagar, Jaipur, Rajasthan 302017, India
-* **WhatsApp Contact:** +91 9399112249 (`https://wa.me/919399112249`)
-* **Front Desk Calling:** +91 9399112249 (`tel:+919399112249`)
+* **WhatsApp Contact:** +91 7425023130 (`https://wa.me/917425023130`)
+* **Front Desk Calling:** +91 7425023130 (`tel:+917425023130`)
 * **Room Categories:**
   * **Deluxe Room:** King bed, crisp white linens, individual split air conditioning, ceiling fan, bedside connectivity, attached modern bathroom with rain shower & geyser.
   * **Super Deluxe Room:** Extended suite living with private balcony, plush velvet couch, coffee table, wall-mounted Smart TV, mini refrigerator, and electric tea/coffee kettle station.
@@ -110,7 +110,7 @@ Output bundle is generated into `dist/` with route-level code splitting and opti
 VITE_SUPABASE_URL=https://xtyckznwxhdxqyfsyzhk.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 VITE_HOTEL_NAME="Hotel Kings Crown"
-VITE_HOTEL_WHATSAPP="+919399112249"
-VITE_HOTEL_PHONE="+919399112249"
+VITE_HOTEL_WHATSAPP="+917425023130"
+VITE_HOTEL_PHONE="+917425023130"
 VITE_HOTEL_ADDRESS="B-21, Mahalaxmi Road, Behind WTP, Malviya Nagar, Jaipur, Rajasthan 302017, India"
 ```

@@ -198,7 +198,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate, onOpenB
               className="btn btn-whatsapp btn-lg mobile-drawer-btn"
             >
               <MessageSquare size={18} />
-              Chat on WhatsApp (+91 9399112249)
+              Chat on WhatsApp (+91 7425023130)
             </a>
             <a 
               href={`tel:${HOTEL_DETAILS.phone}`}

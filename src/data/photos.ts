@@ -237,9 +237,9 @@ export const HOTEL_DETAILS = {
     country: 'India',
     full: 'B-21, Mahalaxmi Road, Behind WTP, Malviya Nagar, Jaipur, Rajasthan 302017, India'
   },
-  whatsapp: '+919399112249',
-  phone: '+919399112249',
-  whatsappUrl: 'https://wa.me/919399112249',
+  whatsapp: '+917425023130',
+  phone: '+917425023130',
+  whatsappUrl: 'https://wa.me/917425023130',
   googleMapsUrl: 'https://maps.google.com/?q=B-21,+Mahalaxmi+Road,+Behind+WTP,+Malviya+Nagar,+Jaipur,+Rajasthan+302017,+India',
   rooms: [
     {

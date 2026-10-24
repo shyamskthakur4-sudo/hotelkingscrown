@@ -213,7 +213,7 @@ export const App: React.FC = () => {
           target="_blank"
           rel="noopener noreferrer"
           className="floating-whatsapp-btn"
-          aria-label="Chat directly on WhatsApp with Hotel Kings Crown (+91 9399112249)"
+          aria-label="Chat directly on WhatsApp with Hotel Kings Crown (+91 7425023130)"
           title="Chat directly on WhatsApp"
         >
           <span className="whatsapp-pulse-dot" aria-hidden="true" />
