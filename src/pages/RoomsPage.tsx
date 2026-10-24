@@ -48,7 +48,6 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onOpenLightbox }) => {
         eyebrow="ACCOMMODATIONS · MALVIYA NAGAR"
         title="Guest Rooms & Suites in Jaipur"
         subtitle="Designed for genuine comfort and peaceful relaxation, featuring individual climate control, clean white linens, modern en-suite bathrooms, and private balconies."
-        badgeText="Actual Deluxe Room · Photo DSC00186"
         actions={
           <div className="hero-quick-chips">
             <a href="#deluxe-room" className="hero-chip-link">

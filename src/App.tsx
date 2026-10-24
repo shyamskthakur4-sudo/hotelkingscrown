@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { MessageSquare, X, Loader2 } from 'lucide-react';
+import { MessageSquare, X, Loader2, ArrowUp } from 'lucide-react';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { Lightbox } from './components/Lightbox';
@@ -29,6 +29,8 @@ export const App: React.FC = () => {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [bookingCategory, setBookingCategory] = useState<RoomCategory>('any');
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   // Sync hash routing
   useEffect(() => {
@@ -45,6 +47,25 @@ export const App: React.FC = () => {
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  // Track scroll reading progress and back-to-top visibility
+  useEffect(() => {
+    const handleScrollProgress = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const progress = (window.scrollY / totalHeight) * 100;
+        setScrollProgress(Math.min(100, Math.max(0, progress)));
+      }
+      setShowBackToTop(window.scrollY > 380);
+    };
+
+    window.addEventListener('scroll', handleScrollProgress, { passive: true });
+    return () => window.removeEventListener('scroll', handleScrollProgress);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const navigateTo = (page: string) => {
     setCurrentPage(page);
@@ -66,6 +87,15 @@ export const App: React.FC = () => {
 
   return (
     <div className="site-wrapper">
+      {/* Top Luxury Gold Scroll Reading Progress Bar */}
+      {currentPage !== 'admin' && (
+        <div 
+          className="scroll-progress-line" 
+          style={{ width: `${scrollProgress}%` }} 
+          aria-hidden="true" 
+        />
+      )}
+
       {/* Do not show standard header/footer if in staff admin dashboard */}
       {currentPage !== 'admin' && (
         <Header 
@@ -180,7 +210,20 @@ export const App: React.FC = () => {
         </div>
       )}
 
-      {/* Floating WhatsApp Action Pill */}
+      {/* Floating Back To Top Button */}
+      {currentPage !== 'admin' && (
+        <button
+          type="button"
+          className={`back-to-top-btn ${showBackToTop ? 'is-visible' : ''}`}
+          onClick={scrollToTop}
+          aria-label="Scroll back to top"
+          title="Back to top"
+        >
+          <ArrowUp size={20} />
+        </button>
+      )}
+
+      {/* Floating WhatsApp Action Pill with Online Dot */}
       {currentPage !== 'admin' && (
         <a
           href={HOTEL_DETAILS.whatsappUrl}
@@ -197,8 +240,8 @@ export const App: React.FC = () => {
             padding: '0.75rem 1.25rem',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.55rem',
-            boxShadow: '0 4px 16px rgba(31, 157, 85, 0.35)',
+            gap: '0.6rem',
+            boxShadow: '0 4px 20px rgba(31, 157, 85, 0.4)',
             fontSize: '0.86rem',
             fontWeight: 600,
             letterSpacing: '0.02em',
@@ -208,6 +251,17 @@ export const App: React.FC = () => {
           onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
           aria-label="Chat directly on WhatsApp with Hotel Kings Crown"
         >
+          <span 
+            style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              backgroundColor: '#55EB93',
+              boxShadow: '0 0 8px #55EB93',
+              display: 'inline-block'
+            }} 
+            aria-hidden="true"
+          />
           <MessageSquare size={18} />
           <span>WhatsApp Enquiries</span>
         </a>

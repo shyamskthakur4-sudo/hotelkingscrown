@@ -17,7 +17,6 @@ export const ContactPage: React.FC = () => {
         eyebrow="DIRECT HOTEL CONCIERGE · 24/7 SUPPORT"
         title="Contact Hotel Kings Crown"
         subtitle="Reach out directly for room availability, rates, group stay requests, or directions to our property in Malviya Nagar, Jaipur behind WTP."
-        badgeText="Actual Front Desk · Photo DSC00144"
         actions={
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <a 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Camera, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 interface PageHeroProps {
   photoSrc: string;
@@ -7,7 +7,6 @@ interface PageHeroProps {
   eyebrow: string;
   title: string;
   subtitle: string;
-  badgeText?: string;
   actions?: React.ReactNode;
   children?: React.ReactNode;
 }
@@ -18,7 +17,6 @@ export const PageHero: React.FC<PageHeroProps> = ({
   eyebrow,
   title,
   subtitle,
-  badgeText = 'Authentic Hotel Photograph',
   actions,
   children
 }) => {
@@ -40,12 +38,12 @@ export const PageHero: React.FC<PageHeroProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Parallax translation: subtle 25% scroll speed
-  const parallaxTransform = `translate3d(0, ${Math.min(scrollY * 0.28, 120)}px, 0) scale(${1 + Math.min(scrollY * 0.0003, 0.08)})`;
+  // Parallax translation: subtle 28% scroll translation with delicate scale
+  const parallaxTransform = `translate3d(0, ${Math.min(scrollY * 0.28, 140)}px, 0) scale(${1 + Math.min(scrollY * 0.00025, 0.07)})`;
 
   return (
     <section className="page-hero" aria-label={title}>
-      {/* Background Image Container with Parallax & Cinematic Overlay */}
+      {/* Background Image Container with Parallax & Cinematic Gradient Overlay */}
       <div className="page-hero-bg-wrapper">
         <img
           src={photoSrc}
@@ -82,12 +80,6 @@ export const PageHero: React.FC<PageHeroProps> = ({
           )}
 
           {children}
-        </div>
-
-        {/* Real photo attribution badge at the bottom corner */}
-        <div className="page-hero-photo-tag reveal-fade-in delay-300">
-          <Camera size={13} />
-          <span>{badgeText}</span>
         </div>
       </div>
     </section>

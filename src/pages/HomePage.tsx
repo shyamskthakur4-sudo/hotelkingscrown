@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   MapPin, 
   MessageSquare, 
@@ -11,7 +11,6 @@ import {
   Building2, 
   Sparkles,
   ExternalLink,
-  Camera,
   Calendar,
   Users
 } from 'lucide-react';
@@ -31,28 +30,24 @@ const HERO_SLIDES = [
   {
     id: 'lobby',
     title: 'Grand Reception & Lounge',
-    badge: 'Lobby Lounge · Photo DSC00153',
     src: '/assets/hotel-kings-crown/photos/DSC00153.jpg',
     tagline: 'A Welcoming Sanctuary Behind WTP, Jaipur'
   },
   {
     id: 'deluxe',
     title: 'Deluxe King Bedroom',
-    badge: 'Deluxe Bedroom · Photo DSC00186',
     src: '/assets/hotel-kings-crown/photos/DSC00186.jpg',
     tagline: 'Individual Split AC, Crisp Linens & Calm Privacy'
   },
   {
     id: 'super-deluxe',
     title: 'Super Deluxe Balcony Suite',
-    badge: 'Balcony Suite · Photo DSC00212',
     src: '/assets/hotel-kings-crown/photos/DSC00212.jpg',
     tagline: 'Private Balcony, Velvet Sitting Lounge & Minibar'
   },
   {
     id: 'dining',
     title: 'On-Site Marble Dining Hall',
-    badge: 'Dining Hall · Photo DSC00171',
     src: '/assets/hotel-kings-crown/photos/DSC00171.jpg',
     tagline: 'Bright Climate-Controlled Dining Space'
   }
@@ -66,6 +61,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   useScrollReveal();
   const [activeSlide, setActiveSlide] = useState(0);
   const [scrollY, setScrollY] = useState(0);
+  const autoPlayTimerRef = useRef<number | null>(null);
 
   // Quick search widget state
   const tomorrow = new Date();
@@ -95,13 +91,32 @@ export const HomePage: React.FC<HomePageProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Auto-advance hero slides every 7 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
+  // Auto-advance hero slides every 7.5 seconds
+  const startTimer = () => {
+    if (autoPlayTimerRef.current) clearInterval(autoPlayTimerRef.current);
+    autoPlayTimerRef.current = window.setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 7000);
-    return () => clearInterval(timer);
+    }, 7500);
+  };
+
+  useEffect(() => {
+    startTimer();
+    return () => {
+      if (autoPlayTimerRef.current) clearInterval(autoPlayTimerRef.current);
+    };
   }, []);
+
+  const handleSelectSlide = (index: number) => {
+    setActiveSlide(index);
+    startTimer(); // reset auto-advance interval on manual click
+  };
+
+  const handleScrollToNext = () => {
+    const el = document.getElementById('search-strip-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const galleryPreview = HOTEL_PHOTOS.filter((p) => p.featured).slice(0, 6);
 
@@ -113,14 +128,13 @@ export const HomePage: React.FC<HomePageProps> = ({
     }
   };
 
-  const currentHero = HERO_SLIDES[activeSlide];
-  const parallaxTransform = `translate3d(0, ${Math.min(scrollY * 0.28, 120)}px, 0) scale(${1 + Math.min(scrollY * 0.0003, 0.08)})`;
+  const parallaxTransform = `translate3d(0, ${Math.min(scrollY * 0.28, 140)}px, 0)`;
 
   return (
     <main id="main-content">
       {/* 1. CINEMATIC HERO SECTION WITH REAL HOTEL PHOTOGRAPHY */}
       <section className="cinematic-hero" aria-label="Welcome to Hotel Kings Crown">
-        {/* Background Slide Carousel with Parallax */}
+        {/* Background Slide Carousel with Parallax and Gentle Ken Burns Scale */}
         <div className="hero-bg-carousel">
           {HERO_SLIDES.map((slide, idx) => (
             <div
@@ -150,10 +164,10 @@ export const HomePage: React.FC<HomePageProps> = ({
               </span>
             </div>
 
-            {/* Masked Editorial Heading */}
+            {/* Editorial Heading with Serif Accent */}
             <div className="hero-title-mask reveal-fade-up delay-100">
               <h1 className="hero-cinematic-title">
-                A Comfortable Stay in the Heart of Jaipur
+                A Comfortable Stay <span className="hero-serif-accent">in the Heart of Jaipur</span>
               </h1>
             </div>
 
@@ -191,15 +205,8 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
           </div>
 
-          {/* Bottom Controls: Slide Switcher Tabs & Attribution */}
+          {/* Bottom Scene Switcher Bar (Clean agency navigation without file tags) */}
           <div className="hero-bottom-bar reveal-fade-in delay-300">
-            {/* Real Photo Attribution Tag */}
-            <div className="hero-photo-tag">
-              <Camera size={14} />
-              <span>{currentHero.badge}</span>
-            </div>
-
-            {/* Interactive Photo Scene Tabs */}
             <div className="hero-scene-tabs" role="tablist" aria-label="Hotel Spaces">
               {HERO_SLIDES.map((slide, idx) => (
                 <button
@@ -208,31 +215,39 @@ export const HomePage: React.FC<HomePageProps> = ({
                   role="tab"
                   aria-selected={idx === activeSlide}
                   className={`hero-scene-tab ${idx === activeSlide ? 'active' : ''}`}
-                  onClick={() => setActiveSlide(idx)}
+                  onClick={() => handleSelectSlide(idx)}
                 >
                   <span className="scene-num">0{idx + 1}</span>
-                  <span className="scene-name">{slide.title.split(' ')[0]}</span>
+                  <span className="scene-name">{slide.title}</span>
+                  {idx === activeSlide && (
+                    <span className="scene-active-bar" aria-hidden="true" />
+                  )}
                 </button>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="hero-scroll-indicator">
+        {/* Clickable Luxury Scroll Indicator */}
+        <button 
+          type="button"
+          className="hero-scroll-indicator"
+          onClick={handleScrollToNext}
+          aria-label="Scroll to hotel discovery section"
+        >
           <span>DISCOVER</span>
           <div className="scroll-line" />
-        </div>
+        </button>
       </section>
 
       {/* 2. FLOATING QUICK ENQUIRY STRIP (HERO SEARCH WIDGET) */}
-      <section className="hero-search-strip-wrapper">
+      <section className="hero-search-strip-wrapper" id="search-strip-section">
         <div className="container">
-          <form className="hero-search-bar" onSubmit={handleQuickSearchSubmit}>
+          <form className="hero-search-bar reveal-fade-up" onSubmit={handleQuickSearchSubmit}>
             <div className="search-field">
               <label htmlFor="search-check-in">
                 <Calendar size={14} />
-                <span>CHECK-IN</span>
+                <span>CHECK-IN DATE</span>
               </label>
               <input
                 id="search-check-in"
@@ -246,7 +261,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="search-field">
               <label htmlFor="search-check-out">
                 <Calendar size={14} />
-                <span>CHECK-OUT</span>
+                <span>CHECK-OUT DATE</span>
               </label>
               <input
                 id="search-check-out"
@@ -293,6 +308,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
             <button type="submit" className="btn btn-gold btn-search">
               Check Availability
+              <ArrowRight size={16} />
             </button>
           </form>
         </div>
@@ -302,7 +318,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       <section className="section section-cream" aria-labelledby="intro-heading">
         <div className="container">
           <div className="intro-grid">
-            <div className="intro-image-frame reveal-fade-up">
+            <div className="intro-image-frame reveal-slide-left">
               <img 
                 src="/assets/hotel-kings-crown/photos/DSC00144.jpg" 
                 alt="Front desk reception counter with marble finish and Rajasthani palace wallpaper" 
@@ -313,7 +329,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </p>
             </div>
 
-            <div className="reveal-fade-up delay-100">
+            <div className="reveal-slide-right delay-100">
               <span className="eyebrow">OUR PROPERTY IN MALVIYA NAGAR</span>
               <h2 id="intro-heading" style={{ marginBottom: '1.4rem' }}>
                 Your Jaipur Stay, Thoughtfully Considered
@@ -517,9 +533,9 @@ export const HomePage: React.FC<HomePageProps> = ({
             </p>
           </div>
 
-          <div className="highlights-grid">
+          <div className="highlights-grid stagger-children">
             {/* Highlight 1: Dining Hall */}
-            <div className="highlight-card reveal-fade-up delay-100">
+            <div className="highlight-card">
               <div className="highlight-image-box">
                 <img 
                   src="/assets/hotel-kings-crown/photos/DSC00171.jpg" 
@@ -536,7 +552,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
 
             {/* Highlight 2: Golden Elevator */}
-            <div className="highlight-card reveal-fade-up delay-200">
+            <div className="highlight-card">
               <div className="highlight-image-box">
                 <img 
                   src="/assets/hotel-kings-crown/photos/DSC00162.jpg" 
@@ -553,7 +569,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
 
             {/* Highlight 3: Modern Bathrooms */}
-            <div className="highlight-card reveal-fade-up delay-300">
+            <div className="highlight-card">
               <div className="highlight-image-box">
                 <img 
                   src="/assets/hotel-kings-crown/photos/DSC00204.jpg" 
@@ -590,11 +606,11 @@ export const HomePage: React.FC<HomePageProps> = ({
             </button>
           </div>
 
-          <div className="gallery-grid">
-            {galleryPreview.map((photo, idx) => (
+          <div className="gallery-grid stagger-children">
+            {galleryPreview.map((photo) => (
               <div 
                 key={photo.id} 
-                className={`gallery-item reveal-fade-up delay-${(idx % 3 + 1) * 100}`}
+                className="gallery-item"
                 onClick={() => onOpenLightbox(photo)}
                 role="button"
                 tabIndex={0}
@@ -615,7 +631,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       <section className="section section-cream" id="location" aria-labelledby="location-heading">
         <div className="container">
           <div className="location-grid">
-            <div className="location-details reveal-fade-up">
+            <div className="location-details reveal-slide-left">
               <span className="eyebrow">MALVIYA NAGAR, JAIPUR</span>
               <h2 id="location-heading" style={{ marginBottom: '1.2rem' }}>
                 Conveniently Located Behind WTP
@@ -669,7 +685,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
             </div>
 
-            <div className="map-container reveal-fade-in delay-200">
+            <div className="map-container reveal-slide-right delay-200">
               <iframe
                 title="Hotel Kings Crown Location Map"
                 src="https://maps.google.com/maps?q=Hotel+Kings+Crown+Malviya+Nagar+Jaipur&t=&z=15&ie=UTF8&iwloc=&output=embed"

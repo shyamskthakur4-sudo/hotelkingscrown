@@ -21,7 +21,6 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenBooking }) => {
         eyebrow="OUR IDENTITY & LOCATION · MALVIYA NAGAR"
         title="Hospitality Grounded in Comfort & Care"
         subtitle="An independently operated boutique hotel in Malviya Nagar, Jaipur, offering comfortable accommodations and practical conveniences for travelers."
-        badgeText="Actual Guest Lounge · Photo DSC00134"
         actions={
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <button

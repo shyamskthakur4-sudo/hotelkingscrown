@@ -27,7 +27,6 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onOpenLightbox, onOpen
         eyebrow="VISUAL ARCHIVE · 26 REAL PHOTOGRAPHS"
         title="Hotel Kings Crown Photo Gallery"
         subtitle="Explore authentic, unedited photographs of our guest rooms, lobby lounge, reception, dining hall, modern elevator, and en-suite bathrooms in Malviya Nagar, Jaipur."
-        badgeText="Actual Dining Hall · Photo DSC00171"
       />
 
       {/* Filter and Grid */}
